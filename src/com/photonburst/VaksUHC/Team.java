@@ -3,14 +3,12 @@ package com.photonburst.VaksUHC;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
-import net.md_5.bungee.api.ChatColor;
+import org.bukkit.ChatColor;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Team {
     private String teamName;
@@ -35,28 +33,6 @@ public class Team {
         return contains;
     }
 
-    public ChatColor convertToColorCode(String color) {
-        Map<String, ChatColor> colorMap = new HashMap<>();
-        colorMap.put("Black", ChatColor.BLACK);
-        colorMap.put("Dark Blue", ChatColor.DARK_BLUE);
-        colorMap.put("Dark Green", ChatColor.DARK_GREEN);
-        colorMap.put("Dark Aqua", ChatColor.DARK_AQUA);
-        colorMap.put("Dark Red", ChatColor.DARK_RED);
-        colorMap.put("Dark Purple", ChatColor.DARK_PURPLE);
-        colorMap.put("Gold", ChatColor.GOLD);
-        colorMap.put("Gray", ChatColor.GRAY);
-        colorMap.put("Dark Gray", ChatColor.DARK_GRAY);
-        colorMap.put("Blue", ChatColor.BLUE);
-        colorMap.put("Green", ChatColor.GREEN);
-        colorMap.put("Aqua", ChatColor.AQUA);
-        colorMap.put("Red", ChatColor.RED);
-        colorMap.put("Light Purple", ChatColor.LIGHT_PURPLE);
-        colorMap.put("Yellow", ChatColor.YELLOW);
-        colorMap.put("White", ChatColor.WHITE);
-
-        return colorMap.get(color);
-    }
-
     public String[] getPlayers() {
         return this.players;
     }
@@ -66,11 +42,11 @@ public class Team {
     }
 
     public ChatColor getTeamColorCode() {
-        return convertToColorCode(getTeamColor());
+        return Utils.convertToColorCode(getTeamColor());
     }
 
-    public String getTeamName() {
-        return this.teamName;
+    public String getTeamName(boolean doCamelCase) {
+        if(doCamelCase) { return Utils.toCamelCase(this.teamName); } else { return this.teamName; }
     }
 
     public int getTeamSize() {
@@ -109,7 +85,7 @@ public class Team {
         for(int i=0; i<teamList.size(); i++) {
             Team team = teamList.get(i);
 
-            Main.plugin.getTeamConfig().set("teams.team"+ (i+1) +".name", team.getTeamName());
+            Main.plugin.getTeamConfig().set("teams.team"+ (i+1) +".name", team.getTeamName(false));
             Main.plugin.getTeamConfig().set("teams.team"+ (i+1) +".color", team.getTeamColor());
 
             for(int j=0; j<team.getTeamSize(); j++) {

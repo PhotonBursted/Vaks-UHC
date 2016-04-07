@@ -1,0 +1,17 @@
+game:
+  team:
+    # following options can have values of true or false
+    friendly-fire: true
+
+    # following options can have values of "always", "never", "own-team" or "other-teams"
+    death-message: always
+    nametag: always
+    player-collision: always
+
+    # amount of seconds before turning a dead player into spectator mode
+    death-kick: 10
+
+  stats:
+    # following options can have values of "health", "playerKillCount" or "none"
+    in-tablist: health
+    under-name: none
