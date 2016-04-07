@@ -1,7 +1,7 @@
 name: VaksUHC
 version: 0.2.1
 author: PhotonBurst
-main: com.photonburst.VaksUHC.Main
+main: com.photonburst.VaksUHC.VaksUHC
 
 commands:
   vuhc:

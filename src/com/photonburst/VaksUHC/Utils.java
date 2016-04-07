@@ -5,7 +5,15 @@ import org.bukkit.ChatColor;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Holds methods with a general purpose
+ */
 public class Utils {
+    /**
+     * Converts a string into a Bukkit ChatColor reference
+     * @param color             The String to be converted
+     * @return                  The Bukkit ChatColor reference
+     */
     public static ChatColor convertToColorCode(String color) {
         Map<String, ChatColor> colorMap = new HashMap<>();
         colorMap.put("Black", ChatColor.BLACK);
@@ -28,10 +36,19 @@ public class Utils {
         return colorMap.get(color);
     }
 
+    /**
+     * Replaces conventional output methods to decrease maintenance inside of the plugin
+     * @param msg               The message to be displayed
+     */
     public static void println(String msg) {
         System.out.println("[VaksUHC] "+ msg);
     }
 
+    /**
+     * Converts a string to camel case, separated by spaces
+     * @param s                 The String which is to be converted
+     * @return                  A camel cased string, transformed from s
+     */
     public static String toCamelCase(String s) {
         String result = "";
 

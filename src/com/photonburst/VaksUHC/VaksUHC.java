@@ -1,5 +1,6 @@
 package com.photonburst.VaksUHC;
 
+import com.photonburst.VaksUHC.Listeners.PlayerListener;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -9,21 +10,38 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Main extends JavaPlugin {
-    ArrayList<Team> teamList = new ArrayList<>();
-    public static Main plugin;
+/**
+ * Master class
+ */
+public class VaksUHC extends JavaPlugin {
+    /**
+     * List of all the UHCTeams in the match
+     * @see                 UHCTeam
+     * @see                 UHCTeam#getTeams(ArrayList)
+     */
+    public ArrayList<UHCTeam> teamList = new ArrayList<>();
+    /**
+     * Reference to this plugin instance, meaning other classes can use it too
+     */
+    public static VaksUHC plugin;
 
     File configf, teamsf;
     static FileConfiguration config, teams;
 
+    /**
+     * Method creating the configuration files if they don't exist yet, loading them if they do
+     */
     private void createConfigs() {
         try {
+            // If the data folder for the plugin doesn't exist, make it
             if (!getDataFolder().exists()) {
                 getDataFolder().mkdirs();
             }
 
             configf = new File(getDataFolder(), "config.yml");
             teamsf = new File(getDataFolder(), "teams.yml");
+
+            // If a config file doesn't exist, clone it out of the jar
             if (!configf.exists()) {
                 Utils.println("config.yml not found, creating!");
                 saveResource("config.yml", false);
@@ -41,9 +59,12 @@ public class Main extends JavaPlugin {
 
             config = new YamlConfiguration();
             teams = new YamlConfiguration();
-            teamList = Team.getTeams(teamList);
+            // Create all the UHCTeam instances out of the .csv template
+            teamList = UHCTeam.getTeams(teamList);
+            // Set up all the scoreboard teams and objectives
             ScoreBoard.setup();
 
+            // Load the config files into their configurations
             try {
                 config.load(configf);
                 teams.load(teamsf);
@@ -55,10 +76,17 @@ public class Main extends JavaPlugin {
         }
     }
 
+    /**
+     * Gets a reference to the team configuration
+     * @return              A reference to the team's YAML configuration
+     */
     public FileConfiguration getTeamConfig() {
         return teams;
     }
 
+    /**
+     * Runs on enabling the plugin, meaning it's the method initializing everything that has to be initialized
+     */
     @Override
     public void onEnable() {
         plugin = this;
@@ -66,11 +94,12 @@ public class Main extends JavaPlugin {
         Utils.println("Whoo! Bring in the murder! :D");
         createConfigs();
 
-        getServer().getPluginManager().registerEvents(new EventCatcher(), this);
-
-        this.getCommand("vuhc").setExecutor(new CommandMain());
+        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
+    /**
+     * Runs on disabling the plugin, purposed to clean up the things the plugin generated
+     */
     @Override
     public void onDisable(){
         ScoreBoard.cleanup();
