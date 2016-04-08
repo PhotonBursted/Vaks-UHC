@@ -1,13 +1,16 @@
 package com.photonburst.VaksUHC.Game;
 
-import com.photonburst.VaksUHC.Managers.PlayerManager;
-import com.photonburst.VaksUHC.ScoreBoard.ScoreBoard;
+import com.photonburst.VaksUHC.Managers.PlayerDeathManager;
+import com.photonburst.VaksUHC.Managers.PlayerJoinManager;
 import com.photonburst.VaksUHC.ScoreBoard.Sidebar;
+import com.photonburst.VaksUHC.UHCTeam;
 import com.photonburst.VaksUHC.VaksUHC;
 import org.bukkit.Bukkit;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 
+import java.util.Collection;
 import java.util.List;
 
 public class GameManager {
@@ -16,13 +19,31 @@ public class GameManager {
         new GameManager().setGameOptions();
 
         // Assign all players to their teams
-        PlayerManager.setUpPlayers();
+        setUpMatch();
 
         // Generate sidebar
-        (new Sidebar(ScoreBoard.o)).runTaskTimer(VaksUHC.plugin, 0, 20);
+        (new Sidebar()).runTaskTimerAsynchronously(VaksUHC.plugin, 0, 20);
+
+        Bukkit.getServer().getPluginManager().registerEvents(new PlayerDeathManager(), VaksUHC.plugin);
+
+        // Set world border
+        new WorldBorder().build(VaksUHC.plugin.getConfig().getInt("game.env.worldborder.size.initial"),
+                                VaksUHC.plugin.getConfig().getInt("game.env.worldborder.size.final"),
+                                VaksUHC.plugin.getConfig().getInt("game.env.worldborder.size.shrinkDuration"),
+                                VaksUHC.plugin.getConfig().getInt("game.env.worldborder.size.shrinkDelay"));
     }
 
-    public void setGameOptions() {
+    public static void setUpMatch() {
+        PlayerDeathManager.killed.clear();
+        VaksUHC.plugin.playerMap = UHCTeam.getPlayerMap(VaksUHC.plugin.teamList);
+
+        Collection<? extends Player> players = Bukkit.getOnlinePlayers();
+        PlayerJoinManager.assignPlayers(Bukkit.getOnlinePlayers());
+
+        players.forEach(PlayerJoinManager::setUpPlayer);
+    }
+
+    private void setGameOptions() {
         gameInProgress = true;
 
         List<World> worlds = Bukkit.getWorlds();

@@ -1,9 +1,25 @@
 name: VaksUHC
-version: 0.2.4
+version: 0.2.5
+description: Helps organize UHC events, Vexian style.
 author: PhotonBurst
+
 main: com.photonburst.VaksUHC.VaksUHC
+website: https://github.com/PhotonBursted/Vaks-UHC
 
 commands:
   vuhc:
-    description: Command containing all the things you'd need for regulating a UHC event!
-    usage: /vuhc <start>
+    description: Regulates hug parties. Oh, also, UHC events.
+    permission: VaksUHC.moderate
+
+permissions:
+  VaksUHC.*:
+    description: Grants access to all commands in VaksUHC.
+    children:
+      VaksUHC.startMatch: true
+      VaksUHC.movePlayer: true
+  VaksUHC.startMatch:
+    description: Allows the starting of a match
+    default: op
+  VaksUHC.movePlayer:
+    description: Allows moving players between teams
+    default: op

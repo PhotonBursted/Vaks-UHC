@@ -1,35 +1,58 @@
 game:
   chat:
-    # allows spectators to chat in global
+    # [true | false] Allows spectators to chat in global
     allow-spectator-global: false
 
-    # string players must prepend to speak in global chat
+    # [type=String] Players must prepend this to speak in global chat
     global-chat-token: "|"
 
   env:
-    # set to true if time should stand stil
+    worldborder:
+      visual:
+        # [distance | time | none]
+        type: distance
+        # [blocks | seconds]
+        amount: 20
+
+      chat:
+        # [true | false] Whether or not to show when the world border starts/stops shrinking (only if the initial and end sizes aren't equal to each other)
+        shrinkStateChange: true
+        # [minutes, 0 to disable] Interval of notifying the server how far the world border is away (only if the initial and end sizes aren't equal to each other)
+        shrinkInterval: 10
+
+      size:
+        # [diameter] Amount of blocks the world border should occupy at the beginning of the match
+        initial: 2500
+        # [diameter] Amount of blocks the world border should occupy at its latest
+        final: 200
+
+        # [minutes] Amount of time before starting to shrink
+        shrinkDelay: 30
+        # [minutes] Amount of time to spend shrinking
+        shrinkDuration: 90
+
+    # [true | false] Set to true if time should stand stil
     eternal-day: false
 
   sidebar:
     title: Vexian UHC Season 2
 
-    # episode timer in minutes
-    timer-enabled: true
+    # [minutes, 0 to disable] Episode length
     timer-length: 20
 
   stats:
-    # following options can have values of "health", "playerKillCount" or "none"
+    # [health | playerKillCount | none] Stats to show in the tablist or below the players' names
     in-tablist: health
     under-name: none
 
   team:
-    # following options can have values of true or false
+    # [true | false] Whether players on the same team can hurt each other
     friendly-fire: true
 
-    # following options can have values of "always", "never", "own-team" or "other-teams"
+    # [always | never | own-team | other-teams]
     death-message: always
     nametag: always
     player-collision: always
 
-    # amount of seconds before turning a dead player into spectator mode
+    # [seconds]
     death-kick: 10

@@ -16,6 +16,6 @@ public class OptionNotConfiguredException extends Exception {
      * @param msg           Message to be sent alongside the error
      */
     public OptionNotConfiguredException(String msg) {
-        super("Couldn't find "+ msg);
+        super(msg +" is either missing or misconfigured. Check your config.yml file!");
     }
 }

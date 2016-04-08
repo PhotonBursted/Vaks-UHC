@@ -3,9 +3,7 @@ package com.photonburst.VaksUHC;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,9 +16,9 @@ import java.util.Map;
  * Custom class for saving teams in an easier format
  */
 public class UHCTeam {
-    private String teamName;
-    private String teamColor;
-    private String[] players;
+    private final String teamName;
+    private final String teamColor;
+    private final String[] players;
 
     /**
      * Constructor for a new UHCTeam
@@ -136,7 +134,7 @@ public class UHCTeam {
                 if(!team[j].equals("")) { playersList.add(playersList.size(), team[j]);}
             }
 
-            String[] players = playersList.toArray(new String[0]);
+            String[] players = playersList.toArray(new String[playersList.size()]);
             teamList.add(teamList.size(), new UHCTeam(team[0], team[1], players));
         }
 

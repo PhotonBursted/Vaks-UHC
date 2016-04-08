@@ -19,19 +19,13 @@ public class ScoreBoard {
     /**
      * Map of all values the team options can get
      */
-    private static Map<String, Team.OptionStatus> optOptions = new HashMap<>();
+    private static final Map<String, Team.OptionStatus> optOptions = new HashMap<>();
 
-    private static Scoreboard board;
-    public static Objective o;
     /**
      * Setup of the scoreboard system. Creates all the teams, sets the options following config, etcetera.
      */
     public static void setup() {
-        board = VaksUHC.plugin.board;
-
-        o = board.registerNewObjective("sidebar", "dummy");
-        o.setDisplayName(ChatColor.GREEN +""+ VaksUHC.plugin.getConfig().getString("game.sidebar.title"));
-        o.setDisplaySlot(DisplaySlot.SIDEBAR);
+        Scoreboard board = VaksUHC.plugin.board;
 
         for(Player player: Bukkit.getOnlinePlayers()) {
             player.setScoreboard(VaksUHC.plugin.board);
@@ -44,10 +38,6 @@ public class ScoreBoard {
         optOptions.put("never", Team.OptionStatus.NEVER);
         optOptions.put("other-teams", Team.OptionStatus.FOR_OTHER_TEAMS);
         optOptions.put("own-team", Team.OptionStatus.FOR_OWN_TEAM);
-
-        // Generate a spectator team
-        Team specTeam = createTeam(board, "Spectator", "Spectator", ChatColor.GRAY);
-        specTeam.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 
         // Set objectives for in the tab list and below the player's names
         try {
@@ -79,14 +69,10 @@ public class ScoreBoard {
      */
     public static void cleanup() {
         // Remove all teams
-        for(Team scteam: VaksUHC.plugin.board.getTeams()) {
-            scteam.unregister();
-        }
+        VaksUHC.plugin.board.getTeams().forEach(Team::unregister);
 
         // Remove all objectives
-        for(Objective sco: VaksUHC.plugin.board.getObjectives()) {
-            sco.unregister();
-        }
+        VaksUHC.plugin.board.getObjectives().forEach(Objective::unregister);
     }
 
     /**
@@ -94,10 +80,14 @@ public class ScoreBoard {
      * @param board         The scoreboard to add the team to
      * @param team          The UHCTeam to get all the information out of
      * @return              A scoreboard-compatible team, made up of the data in the UHCTeam, without any specific settings
+     *
      * @see                 #createTeam(Scoreboard, String, String, ChatColor)
      */
     private static Team createTeam(Scoreboard board, UHCTeam team) {
-        return createTeam(board, team.getTeamColor(), team.getTeamName(false).substring(0, Math.min(32, team.getTeamName(false).length())), team.getTeamColorCode());
+        return createTeam(board,
+                          team.getTeamColor(),
+                          team.getTeamName(false).substring(0, Math.min(32, team.getTeamName(false).length())),
+                          team.getTeamColorCode());
     }
 
     /**
@@ -107,6 +97,8 @@ public class ScoreBoard {
      * @param teamDisplayName The longer, displayed name of the team
      * @param color         The color the team will have
      * @return              A scoreboard-compatible team without any specific settings
+     *
+     * @see                 #createTeam(Scoreboard, String, String, ChatColor)
      */
     private static Team createTeam(Scoreboard board, String teamName, String teamDisplayName, ChatColor color) {
         Team scteam = board.registerNewTeam(teamName);

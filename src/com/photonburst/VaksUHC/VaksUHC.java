@@ -1,8 +1,9 @@
 package com.photonburst.VaksUHC;
 
 import com.photonburst.VaksUHC.Commands.CmdMain;
+import com.photonburst.VaksUHC.Game.WorldBorder;
 import com.photonburst.VaksUHC.Managers.ChatManager;
-import com.photonburst.VaksUHC.Managers.PlayerManager;
+import com.photonburst.VaksUHC.Managers.PlayerJoinManager;
 import com.photonburst.VaksUHC.ScoreBoard.ScoreBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -35,7 +36,7 @@ public class VaksUHC extends JavaPlugin {
     public Scoreboard board;
 
     File configf, teamsf;
-    static FileConfiguration config, teams;
+    private static FileConfiguration config, teams;
 
     /**
      * Method creating the configuration files if they don't exist yet, loading them if they do
@@ -44,6 +45,7 @@ public class VaksUHC extends JavaPlugin {
         try {
             // If the data folder for the plugin doesn't exist, make it
             if (!getDataFolder().exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 getDataFolder().mkdirs();
             }
 
@@ -68,9 +70,11 @@ public class VaksUHC extends JavaPlugin {
 
             config = new YamlConfiguration();
             teams = new YamlConfiguration();
+
             // Create all the UHCTeam instances out of the .csv template
             teamList = UHCTeam.getTeams(teamList);
             playerMap = UHCTeam.getPlayerMap(teamList);
+
             // Set up all the scoreboard teams and objectives
             ScoreBoard.setup();
 
@@ -100,12 +104,13 @@ public class VaksUHC extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
-        board = Bukkit.getScoreboardManager().getMainScoreboard();
+        board = Bukkit.getScoreboardManager().getNewScoreboard();
 
         Utils.println("Whoo! Bring in the murder! :D");
         createConfigs();
+        new WorldBorder().build(150, 150, 0, 0);
 
-        getServer().getPluginManager().registerEvents(new PlayerManager(), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinManager(), this);
         getServer().getPluginManager().registerEvents(new ChatManager(), this);
         getCommand("vuhc").setExecutor(new CmdMain());
     }
