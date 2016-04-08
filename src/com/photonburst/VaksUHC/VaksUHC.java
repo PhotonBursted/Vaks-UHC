@@ -1,6 +1,7 @@
 package com.photonburst.VaksUHC;
 
 import com.photonburst.VaksUHC.Commands.CmdMain;
+import com.photonburst.VaksUHC.Listeners.ChatListener;
 import com.photonburst.VaksUHC.Listeners.PlayerListener;
 import com.photonburst.VaksUHC.ScoreBoard.ScoreBoard;
 import org.bukkit.Bukkit;
@@ -31,7 +32,7 @@ public class VaksUHC extends JavaPlugin {
      * Reference to this plugin instance, meaning other classes can use it too
      */
     public static VaksUHC plugin;
-    public Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
+    public Scoreboard board;
 
     File configf, teamsf;
     static FileConfiguration config, teams;
@@ -99,11 +100,13 @@ public class VaksUHC extends JavaPlugin {
     @Override
     public void onEnable() {
         plugin = this;
+        board = Bukkit.getScoreboardManager().getMainScoreboard();
 
         Utils.println("Whoo! Bring in the murder! :D");
         createConfigs();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(), this);
         getCommand("vuhc").setExecutor(new CmdMain());
     }
 
@@ -118,5 +121,6 @@ public class VaksUHC extends JavaPlugin {
         Utils.println("...get it? Killing? ....kay I'm leaving now");
 
         plugin = null;
+        board = null;
     }
 }
