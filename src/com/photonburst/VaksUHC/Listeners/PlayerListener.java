@@ -1,9 +1,13 @@
 package com.photonburst.VaksUHC.Listeners;
 
 import com.photonburst.VaksUHC.UHCTeam;
+import com.photonburst.VaksUHC.Utils;
 import com.photonburst.VaksUHC.VaksUHC;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,7 +26,7 @@ public class PlayerListener implements Listener {
     /**
      * List of players who have died during this match
      */
-    ArrayList<String> killed = new ArrayList<>();
+    public static ArrayList<String> killed = new ArrayList<>();
 
     /**
      * Handles any players that join (puts them on a team, gives them the right gamemode/effects, etc)
@@ -47,8 +51,7 @@ public class PlayerListener implements Listener {
 
         // If the player has a team in the configuration and hasn't been killed, add them to their team
         if(success && !killed.contains(player.getName())) {
-            player.getScoreboard().getTeam(playerTeam.getTeamColor()).addEntry(player.getName());
-            player.setGameMode(GameMode.SURVIVAL);
+            setToTeamMember(player, playerTeam);
             player.sendMessage(ChatColor.GOLD +"Welcome"+
                     ChatColor.BOLD +" "+ ChatColor.RED +""+ player.getName() +
                     ChatColor.RESET +""+ ChatColor.GOLD +"! You have been added to team"+
@@ -72,9 +75,25 @@ public class PlayerListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent e) {
         // Get the player instance of whoever just died
         Player player = e.getEntity();
+        Server.Spigot spigot = player.getServer().spigot();
 
         // If the player died before, do nothing. Else, put them into spectator mode after some delay
         if(!killed.contains(player.getName())) {
+            killed.add(killed.size(), player.getName());
+            VaksUHC.plugin.playerMap.remove(player.getName());
+            if(!VaksUHC.plugin.playerMap.containsValue(Bukkit.getScoreboardManager().getMainScoreboard().getEntryTeam(player.getName()).getName())) {
+                spigot.broadcast(new ComponentBuilder("Oh snap! Team ")
+                        .color(net.md_5.bungee.api.ChatColor.GOLD)
+                        .bold(false)
+                        .append(Bukkit.getScoreboardManager().getMainScoreboard().getEntryTeam(player.getName()).getDisplayName())
+                        .color(Utils.convertToColorCodeBun(Bukkit.getScoreboardManager().getMainScoreboard().getEntryTeam(player.getName()).getPrefix()))
+                        .bold(true)
+                        .append(" has been wiped out!")
+                        .color(net.md_5.bungee.api.ChatColor.GOLD)
+                        .bold(false)
+                        .create()
+                );
+            }
             player.sendMessage(ChatColor.GOLD + "Oh no! It seems like you have died... Within " +
                     ChatColor.BOLD + "10 seconds" +
                     ChatColor.RESET + "" + ChatColor.GOLD + ", you'll be moved to a spectator role. Wish your teammates all the best!"
@@ -95,9 +114,14 @@ public class PlayerListener implements Listener {
      * @param player        Player to be put into spectator mode
      */
     public void setToSpectator(Player player) {
-        killed.add(killed.size(), player.getName());
         player.getScoreboard().getTeam("Spectator").addEntry(player.getName());
         player.setGameMode(GameMode.SPECTATOR);
         player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999, 0, true));
+    }
+
+    public void setToTeamMember(Player player, UHCTeam team) {
+        player.getScoreboard().getTeam(team.getTeamColor()).addEntry(player.getName());
+        player.setGameMode(GameMode.SURVIVAL);
+        player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 0, 0, true));
     }
 }

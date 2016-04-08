@@ -1,14 +1,20 @@
 package com.photonburst.VaksUHC;
 
+import com.photonburst.VaksUHC.Commands.CmdMain;
 import com.photonburst.VaksUHC.Listeners.PlayerListener;
+import com.photonburst.VaksUHC.ScoreBoard.ScoreBoard;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Master class
@@ -20,10 +26,12 @@ public class VaksUHC extends JavaPlugin {
      * @see                 UHCTeam#getTeams(ArrayList)
      */
     public ArrayList<UHCTeam> teamList = new ArrayList<>();
+    public Map<String, String> playerMap = new HashMap<>();
     /**
      * Reference to this plugin instance, meaning other classes can use it too
      */
     public static VaksUHC plugin;
+    public Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 
     File configf, teamsf;
     static FileConfiguration config, teams;
@@ -61,6 +69,7 @@ public class VaksUHC extends JavaPlugin {
             teams = new YamlConfiguration();
             // Create all the UHCTeam instances out of the .csv template
             teamList = UHCTeam.getTeams(teamList);
+            playerMap = UHCTeam.getPlayerMap(teamList);
             // Set up all the scoreboard teams and objectives
             ScoreBoard.setup();
 
@@ -95,6 +104,7 @@ public class VaksUHC extends JavaPlugin {
         createConfigs();
 
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getCommand("vuhc").setExecutor(new CmdMain());
     }
 
     /**

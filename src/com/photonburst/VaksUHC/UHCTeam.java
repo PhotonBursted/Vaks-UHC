@@ -3,12 +3,16 @@ package com.photonburst.VaksUHC;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvParser;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.scoreboard.Scoreboard;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Custom class for saving teams in an easier format
@@ -47,6 +51,18 @@ public class UHCTeam {
         return contains;
     }
 
+    public static Map<String, String> getPlayerMap(ArrayList<UHCTeam> teamList) {
+        Map<String, String> playerMap = new HashMap<>();
+
+        for(UHCTeam team: teamList) {
+            for(String player: team.getPlayers()) {
+                playerMap.put(player, team.getTeamColor());
+            }
+        }
+
+        return playerMap;
+    }
+
     /**
      * Returns the set of players in this team
      * @return              The set of players in the team
@@ -68,7 +84,7 @@ public class UHCTeam {
      * @return              The Bukkit ChatColor reference to the team color
      */
     public ChatColor getTeamColorCode() {
-        return Utils.convertToColorCode(getTeamColor());
+        return Utils.convertToColorCodeBuk(getTeamColor());
     }
 
     /**
@@ -114,12 +130,13 @@ public class UHCTeam {
 
         for(int i=1; i<rows.size(); i++) {
             String[] team = rows.get(i);
-            String[] players = new String[team.length - 2];
+            ArrayList<String> playersList = new ArrayList<>();
 
             for(int j=2; j<team.length; j++) {
-                players[j-2] = team[j];
+                if(!team[j].equals("")) { playersList.add(playersList.size(), team[j]);}
             }
 
+            String[] players = playersList.toArray(new String[0]);
             teamList.add(teamList.size(), new UHCTeam(team[0], team[1], players));
         }
 

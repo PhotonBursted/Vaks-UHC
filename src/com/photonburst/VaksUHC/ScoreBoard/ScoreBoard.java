@@ -1,8 +1,11 @@
-package com.photonburst.VaksUHC;
+package com.photonburst.VaksUHC.ScoreBoard;
 
 import com.photonburst.VaksUHC.Exceptions.OptionNotConfiguredException;
+import com.photonburst.VaksUHC.UHCTeam;
+import com.photonburst.VaksUHC.VaksUHC;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.*;
 
 import java.util.ArrayList;
@@ -18,10 +21,22 @@ public class ScoreBoard {
      */
     private static Map<String, Team.OptionStatus> optOptions = new HashMap<>();
 
+    static ScoreboardManager manager = Bukkit.getScoreboardManager();
+    static Scoreboard board;
+    public static Objective o;
     /**
      * Setup of the scoreboard system. Creates all the teams, sets the options following config, etcetera.
      */
     public static void setup() {
+        board = manager.getMainScoreboard();
+
+        o = board.registerNewObjective("sidebar", "dummy");
+        o.setDisplayName(ChatColor.GREEN +""+ VaksUHC.plugin.getConfig().getString("game.sidebar.title"));
+        o.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+        for(Player player: Bukkit.getOnlinePlayers()) {
+            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+        }
         // Get the actual list of teams
         ArrayList<UHCTeam> teamList = VaksUHC.plugin.teamList;
 
@@ -30,10 +45,6 @@ public class ScoreBoard {
         optOptions.put("never", Team.OptionStatus.NEVER);
         optOptions.put("other-teams", Team.OptionStatus.FOR_OTHER_TEAMS);
         optOptions.put("own-team", Team.OptionStatus.FOR_OWN_TEAM);
-
-        // Initialize the scoreboard
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard board = manager.getMainScoreboard();
 
         // Generate a spectator team
         Team specTeam = createTeam(board, "Spectator", "Spectator", ChatColor.GRAY);

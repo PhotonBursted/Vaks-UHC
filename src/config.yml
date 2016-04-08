@@ -15,3 +15,10 @@ game:
     # following options can have values of "health", "playerKillCount" or "none"
     in-tablist: health
     under-name: none
+
+  sidebar:
+    title: Vexian UHC Season 2
+
+    # episode timer in minutes
+    timer-enabled: true
+    timer-length: 20
