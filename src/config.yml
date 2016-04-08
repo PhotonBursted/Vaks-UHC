@@ -1,4 +1,27 @@
 game:
+  chat:
+    # allows spectators to chat in global
+    allow-spectator-global: false
+
+    # string players must prepend to speak in global chat
+    global-chat-token: "|"
+
+  env:
+    # set to true if time should stand stil
+    eternal-day: false
+
+  sidebar:
+    title: Vexian UHC Season 2
+
+    # episode timer in minutes
+    timer-enabled: true
+    timer-length: 20
+
+  stats:
+    # following options can have values of "health", "playerKillCount" or "none"
+    in-tablist: health
+    under-name: none
+
   team:
     # following options can have values of true or false
     friendly-fire: true
@@ -10,15 +33,3 @@ game:
 
     # amount of seconds before turning a dead player into spectator mode
     death-kick: 10
-
-  stats:
-    # following options can have values of "health", "playerKillCount" or "none"
-    in-tablist: health
-    under-name: none
-
-  sidebar:
-    title: Vexian UHC Season 2
-
-    # episode timer in minutes
-    timer-enabled: true
-    timer-length: 20

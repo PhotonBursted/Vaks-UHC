@@ -1,6 +1,6 @@
 package com.photonburst.VaksUHC.ScoreBoard;
 
-import com.photonburst.VaksUHC.Listeners.PlayerListener;
+import com.photonburst.VaksUHC.Managers.PlayerManager;
 import com.photonburst.VaksUHC.UHCTeam;
 import com.photonburst.VaksUHC.Utils;
 import com.photonburst.VaksUHC.VaksUHC;
@@ -23,7 +23,7 @@ public class Sidebar extends BukkitRunnable {
 
     public Sidebar(Objective o) {
         this.o = o;
-        this.board = Bukkit.getScoreboardManager().getMainScoreboard();
+        this.board = VaksUHC.plugin.board;
 
         for(Player player: Bukkit.getOnlinePlayers()) {
             player.setScoreboard(board);
@@ -46,10 +46,13 @@ public class Sidebar extends BukkitRunnable {
         for(String entry: entriesList) { board.resetScores(entry); }
 
         o.getScore("Teams left: "+ ChatColor.BOLD +""+ (VaksUHC.plugin.playerMap.values().stream().distinct().count())) .setScore(4);
-        o.getScore("Players left: "+ ChatColor.BOLD +""+ (Utils.calculatePlayerCount() - PlayerListener.killed.size())) .setScore(3);
-        o.getScore("-----------------")                                                                                   .setScore(2);
-        o.getScore("        ("+ Utils.secToMin(countdown) +")")                                                         .setScore(1);
-        o.getScore("      Episode "+ (episodeCount < 10 ? "0"+ episodeCount : episodeCount))                            .setScore(0);
+        o.getScore("Players left: "+ ChatColor.BOLD +""+ (Utils.calculatePlayerCount() - PlayerManager.killed.size())) .setScore(3);
+
+        if(VaksUHC.plugin.getConfig().getBoolean("game.sidebar.timer-enabled")) {
+            o.getScore("-----------------")                                                                             .setScore(2);
+            o.getScore("        (" + Utils.secToMin(countdown) + ")")                                                   .setScore(1);
+            o.getScore("      Episode " + (episodeCount < 10 ? "0" + episodeCount : episodeCount))                      .setScore(0);
+        }
 
         if(countdown == 0) { //If countdown == 0.
             episodeCount++;

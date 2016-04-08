@@ -1,8 +1,8 @@
 package com.photonburst.VaksUHC;
 
 import com.photonburst.VaksUHC.Commands.CmdMain;
-import com.photonburst.VaksUHC.Listeners.ChatListener;
-import com.photonburst.VaksUHC.Listeners.PlayerListener;
+import com.photonburst.VaksUHC.Managers.ChatManager;
+import com.photonburst.VaksUHC.Managers.PlayerManager;
 import com.photonburst.VaksUHC.ScoreBoard.ScoreBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -105,8 +105,8 @@ public class VaksUHC extends JavaPlugin {
         Utils.println("Whoo! Bring in the murder! :D");
         createConfigs();
 
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new ChatListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerManager(), this);
+        getServer().getPluginManager().registerEvents(new ChatManager(), this);
         getCommand("vuhc").setExecutor(new CmdMain());
     }
 

@@ -1,9 +1,9 @@
 name: VaksUHC
-version: 0.2.3
+version: 0.2.4
 author: PhotonBurst
 main: com.photonburst.VaksUHC.VaksUHC
 
 commands:
   vuhc:
     description: Command containing all the things you'd need for regulating a UHC event!
-    usage: /vuhc
+    usage: /vuhc <start>

@@ -45,9 +45,9 @@ public class Utils {
     }
 
     /**
-     * Converts a string into a Bukkit ChatColor reference
+     * Converts a string into a Bungee ChatColor reference
      * @param color             The String to be converted
-     * @return                  The Bukkit ChatColor reference
+     * @return                  The Bungee ChatColor reference
      */
     public static net.md_5.bungee.api.ChatColor convertToColorCodeBun(String color) {
         Map<String, net.md_5.bungee.api.ChatColor> colorMap = new HashMap<>();

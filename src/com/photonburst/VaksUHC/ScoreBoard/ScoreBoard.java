@@ -21,21 +21,20 @@ public class ScoreBoard {
      */
     private static Map<String, Team.OptionStatus> optOptions = new HashMap<>();
 
-    static ScoreboardManager manager = Bukkit.getScoreboardManager();
-    static Scoreboard board;
+    private static Scoreboard board;
     public static Objective o;
     /**
      * Setup of the scoreboard system. Creates all the teams, sets the options following config, etcetera.
      */
     public static void setup() {
-        board = manager.getMainScoreboard();
+        board = VaksUHC.plugin.board;
 
         o = board.registerNewObjective("sidebar", "dummy");
         o.setDisplayName(ChatColor.GREEN +""+ VaksUHC.plugin.getConfig().getString("game.sidebar.title"));
         o.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         for(Player player: Bukkit.getOnlinePlayers()) {
-            player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+            player.setScoreboard(VaksUHC.plugin.board);
         }
         // Get the actual list of teams
         ArrayList<UHCTeam> teamList = VaksUHC.plugin.teamList;
@@ -80,12 +79,12 @@ public class ScoreBoard {
      */
     public static void cleanup() {
         // Remove all teams
-        for(Team scteam: Bukkit.getScoreboardManager().getMainScoreboard().getTeams()) {
+        for(Team scteam: VaksUHC.plugin.board.getTeams()) {
             scteam.unregister();
         }
 
         // Remove all objectives
-        for(Objective sco: Bukkit.getScoreboardManager().getMainScoreboard().getObjectives()) {
+        for(Objective sco: VaksUHC.plugin.board.getObjectives()) {
             sco.unregister();
         }
     }
