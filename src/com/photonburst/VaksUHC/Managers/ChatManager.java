@@ -11,20 +11,37 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.scoreboard.Team;
 
+/**
+ * Manages all chat-related events
+ */
 public class ChatManager implements Listener {
+    /**
+     * Detects whenever a player sends a message
+     * @param e                 The event object to listen to
+     */
     @EventHandler
     public void onMessage(AsyncPlayerChatEvent e) {
+        // Get the player the message came from
         Player player = e.getPlayer();
+        // Get the contents of the message
         String msg = e.getMessage();
-        Team SCteam = VaksUHC.plugin.board.getEntryTeam(player.getName());
-        UHCTeam UHCteam = PlayerJoinManager.findPlayerInTeamList(player.getName());
-        ChatColor teamColor = ChatColor.GRAY;
-        String s = VaksUHC.plugin.getConfig().getString("game.chat.global-chat-token");
-        // Get the color associated with the player's team
 
+        // Retrieve the scoreboard team the player is part of
+        Team SCteam = VaksUHC.plugin.board.getEntryTeam(player.getName());
+        // Retrieve the UHC team the player was signed up for
+        UHCTeam UHCteam = PlayerJoinManager.findPlayerInTeamList(player.getName());
+
+        // Retrieve the token necessary to switch chat modes
+        String s = VaksUHC.plugin.getConfig().getString("game.chat.global-chat-token");
+
+        // Should there not be a game running, all chat is global
         if(GameManager.isRunning()) {
+            // If the message is prepended with the token
             if (msg.startsWith(s)) {
+                // Talk in global chat
                 e.setFormat("[G] <" + SCteam.getPrefix() + player.getName() + SCteam.getSuffix() + "> " + msg.substring(s.length()));
+
+                // If the sender was a spectator and spectator global chat is disabled, cancel the message
                 if (!VaksUHC.plugin.getConfig().getBoolean("game.chat.allow-spectator-global") && PlayerDeathManager.killed.contains(player.getName())) {
                     e.setCancelled(true);
                     player.sendMessage(ChatColor.ITALIC + "" + ChatColor.RED + "Spectators cannot send global messages!");

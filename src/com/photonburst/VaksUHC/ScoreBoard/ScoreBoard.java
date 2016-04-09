@@ -27,6 +27,7 @@ public class ScoreBoard {
     public static void setup() {
         Scoreboard board = VaksUHC.plugin.board;
 
+        // Set the scoreboard for all players online at that moment
         for(Player player: Bukkit.getOnlinePlayers()) {
             player.setScoreboard(VaksUHC.plugin.board);
         }

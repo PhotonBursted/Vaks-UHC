@@ -49,11 +49,17 @@ public class UHCTeam {
         return contains;
     }
 
+    /**
+     * Generates a player map, containing all alive players linked to their team
+     * @param teamList          The list of UHCTeams the match started with
+     * @return                  The player map
+     */
     public static Map<String, String> getPlayerMap(ArrayList<UHCTeam> teamList) {
         Map<String, String> playerMap = new HashMap<>();
 
         for(UHCTeam team: teamList) {
             for(String player: team.getPlayers()) {
+                // Team color is used as an identifier per team
                 playerMap.put(player, team.getTeamColor());
             }
         }

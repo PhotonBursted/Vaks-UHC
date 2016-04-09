@@ -16,24 +16,47 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * Handles player related events
+ * Handles player joins
  */
 public class PlayerJoinManager implements Listener {
 
+    /**
+     * Assigns players to their relative scoreboard team
+     * @param players           The list of players to add
+     *
+     * @see                     #assignPlayer(Player, Team)
+     */
     public static void assignPlayers(Collection<? extends Player> players) {
         for(Player player: players) {
             assignPlayer(player, VaksUHC.plugin.board.getTeam(findPlayerInTeamList(player.getName()).getTeamColor()));
         }
     }
 
+    /**
+     * Assigns a player to their appropriate scoreboard team
+     * @param player            The player to add to a team
+     * @param team              The team to be added to
+     */
     private static void assignPlayer(Player player, Team team) {
         team.addEntry(player.getName());
     }
 
+    /**
+     * Assigns a player to their scoreboard team
+     * @param player            The player to add to a team
+     * @param team              The team to be added to
+     *
+     * @see                     #assignPlayer(Player, Team)
+     */
     private static void assignPlayer(String player, String team) {
         assignPlayer(Bukkit.getPlayer(player), VaksUHC.plugin.board.getTeam(team));
     }
 
+    /**
+     * Finds the player in the populated list of UHCTeams
+     * @param player            Player to be queried
+     * @return                  The team the player was found in
+     */
     public static UHCTeam findPlayerInTeamList(String player) {
         UHCTeam playerTeam = new UHCTeam("", "", new String[0]);
 
@@ -49,7 +72,7 @@ public class PlayerJoinManager implements Listener {
 
     /**
      * Handles any players that join (puts them on a team, gives them the right gamemode/effects, etc)
-     * @param e             The caught event when a player joins the server
+     * @param e                 The caught event when a player joins the server
      */
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent e) {
@@ -75,12 +98,15 @@ public class PlayerJoinManager implements Listener {
         player.removePotionEffect(PotionEffectType.NIGHT_VISION);
     }
 
+    /**
+     * Sets up a player to go into the match
+     * @param player           The player to be set up
+     */
     public static void setUpPlayer(Player player) {
         ArrayList<UHCTeam> teamList = VaksUHC.plugin.teamList;
-
-        // Initialize a value to playerTeam so the compiler knows a value has been assigned in any case
         UHCTeam playerTeam = findPlayerInTeamList(player.getName());
 
+        // If the player is still alive
         if(VaksUHC.plugin.playerMap.containsKey(player.getName())) {
             setToTeamMember(player, playerTeam);
             player.sendMessage(ChatColor.GOLD +"Welcome"+

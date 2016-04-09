@@ -1,5 +1,6 @@
 package com.photonburst.VaksUHC.ScoreBoard;
 
+import com.photonburst.VaksUHC.Game.GameManager;
 import com.photonburst.VaksUHC.UHCTeam;
 import com.photonburst.VaksUHC.Utils;
 import com.photonburst.VaksUHC.VaksUHC;
@@ -14,26 +15,54 @@ import org.bukkit.scoreboard.Scoreboard;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Controls the sidebar with timer, players/teams left, etc.
+ */
 public class Sidebar extends BukkitRunnable {
+    /**
+     * The scoreboard instance the rest of the plugin uses too
+     */
     private final Scoreboard board;
+    /**
+     * Objectives for displaying in the sidebar
+     * @see         #swapBuffer()
+     */
     private Objective o, b;
 
-    private static final int ticks = 60 * VaksUHC.plugin.getConfig().getInt("game.sidebar.timer-length");
-    public static int countdown = ticks, episodeCount = 1;
+    /**
+     * The amount of seconds to set the countdown to every time
+     */
+    private static final int seconds = 60 * VaksUHC.plugin.getConfig().getInt("game.sidebar.timer-length");
+    /**
+     * The main variables for keeping track of the timer
+     */
+    public static int countdown = seconds, episodeCount = 1;
 
+    /**
+     * Main constructor of the sidebar, initializing variables
+     */
     public Sidebar() {
+        // Get the scoreboard
         this.board = VaksUHC.plugin.board;
 
+        // Register the objectives showing on the sidebar
         this.o = board.registerNewObjective("sidebar", "dummy");
         o.setDisplayName(org.bukkit.ChatColor.GREEN +""+ VaksUHC.plugin.getConfig().getString("game.sidebar.title"));
         o.setDisplaySlot(DisplaySlot.SIDEBAR);
         this.b = o;
 
+        // Set the scoreboard for all online players
         for(Player player: Bukkit.getOnlinePlayers()) {
             player.setScoreboard(board);
         }
     }
 
+    /**
+     * Updates the sidebar every second(!) because of its BukkitRunnable extension
+     *
+     * @see         BukkitRunnable
+     * @see         GameManager#startGame
+     */
     @Override
     public void run() {
         countdown--; // Decrements the countdown by 1 every second
@@ -57,27 +86,38 @@ public class Sidebar extends BukkitRunnable {
 
         if(countdown == 0) { // Should the countdown become 0, start again and increment the episode counter
             episodeCount++;
-            countdown = ticks;
+            countdown = seconds;
         }
     }
 
+    /**
+     * Updates the information displayed on the sidebar
+     */
     private void update() {
+        // Saves the text, swaps the buffer, then saves it again
+        // This means there's better covering overall (and thus less flicker)
         putScores();
         swapBuffer();
         putScores();
     }
 
+    /**
+     * Saves pieces of text onto the sidebar
+     */
     private void putScores() {
         b.getScore("Teams left: "+ ChatColor.BOLD +""+ (VaksUHC.plugin.playerMap.values().stream().distinct().count())) .setScore(4);
         b.getScore("Players left: "+ ChatColor.BOLD +""+ (VaksUHC.plugin.playerMap.size()))                             .setScore(3);
 
         if(VaksUHC.plugin.getConfig().getInt("game.sidebar.timer-length") != 0) {
             b.getScore("-----------------")                                                                             .setScore(2);
-            b.getScore("         .:" + Utils.secToMin(countdown) + ":.")                                                  .setScore(1);
+            b.getScore("         .:" + Utils.secToMin(countdown) + ":.")                                                .setScore(1);
             b.getScore("      Episode " + (episodeCount < 10 ? "0" + episodeCount : episodeCount))                      .setScore(0);
         }
     }
 
+    /**
+     * Swaps the buffer- and original objectives
+     */
     private void swapBuffer() {
         b.setDisplaySlot(o.getDisplaySlot());
 

@@ -6,7 +6,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Central command handler
+ */
 public class CmdMain implements CommandExecutor {
+    /**
+     * Responds to a commmand passing through the chat
+     * @param sender            Entity sending the command
+     * @param cmd               Command which was sent
+     * @param label             Raw message
+     * @param args              Trimmmed message, excluding the command
+     * @return                  The success of the command handling
+     */
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if(cmd.getName().equalsIgnoreCase("vuhc")) {
             if(args.length == 0) {
