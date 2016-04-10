@@ -1,6 +1,7 @@
 package com.photonburst.VaksUHC;
 
 import com.photonburst.VaksUHC.Commands.CmdMain;
+import com.photonburst.VaksUHC.Discord.Bot;
 import com.photonburst.VaksUHC.Game.WorldBorder;
 import com.photonburst.VaksUHC.Managers.ChatManager;
 import com.photonburst.VaksUHC.Managers.PlayerJoinManager;
@@ -22,6 +23,7 @@ import java.util.Map;
  * Master class
  */
 public class VaksUHC extends JavaPlugin {
+    public Bot bot;
     /**
      * List of all the UHCTeams in the match
      * @see                 UHCTeam
@@ -131,6 +133,11 @@ public class VaksUHC extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatManager(), this);
         // Register the command controlling the match
         getCommand("vuhc").setExecutor(new CmdMain());
+
+        if(plugin.getConfig().getBoolean("discord.enable")) {
+            bot = new Bot(plugin);
+            bot.start();
+        }
     }
 
     /**

@@ -38,8 +38,6 @@ public class PlayerDeathManager implements Listener {
 
         // If the player died before, do nothing. Else, put them into spectator mode after some delay
         if (!killed.contains(player.getName())) {
-            player.setGameMode(GameMode.SPECTATOR);
-
             // Add the player to the list of dead people
             killed.add(killed.size(), player.getName());
 
@@ -70,6 +68,9 @@ public class PlayerDeathManager implements Listener {
                 @Override
                 public void run() {
                     PlayerDeathManager.setToSpectator(player);
+                    if(VaksUHC.plugin.getConfig().getBoolean("discord.enable")) {
+                        VaksUHC.plugin.bot.handleDeath(player.getName());
+                    }
                 }
             }.runTaskLater(VaksUHC.plugin, 20 * VaksUHC.plugin.getConfig().getInt("game.team.death-kick"));
         }

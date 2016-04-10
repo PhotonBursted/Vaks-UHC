@@ -56,3 +56,11 @@ game:
 
     # [seconds]
     death-kick: 10
+
+discord:
+  # [true | false] Automatically manage roles in Discord
+  enable: true
+
+  credentials:
+
+  # [type=String] The channel ID of the channel you'd like the bot to post messages in. Needs to be the server you'll be talking in
