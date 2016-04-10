@@ -61,6 +61,10 @@ discord:
   # [true | false] Automatically manage roles in Discord
   enable: true
 
+  # The credentials for the 'bot' account
   credentials:
+    email:
+    password:
 
   # [type=String] The channel ID of the channel you'd like the bot to post messages in. Needs to be the server you'll be talking in
+  channel-id:
